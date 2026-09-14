@@ -1,7 +1,298 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Team-authored 10 original IT helpdesk test cases: 5 single-turn query cases and 5 multi-turn turns cases.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_missing_asset_clarify",
+      "phase": "B",
+      "suite": "group",
+      "query": "Máy tính của tôi không in được tài liệu, hãy kiểm tra phần cứng giúp tôi.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_asset",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu kiểm tra phần cứng thiết bị nhưng thiếu mã asset_id, phải hỏi lại bằng clarify response_type=text."
+      }
+    },
+    {
+      "id": "G02_printing_service_status",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hệ thống in ấn printing trên production hiện có hoạt động bình thường không?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "printing",
+              "environment": "production"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "route_shared_service",
+        "difficulty": "easy",
+        "what_it_tests": "Kiểm tra dịch vụ dùng chung printing trên môi trường production."
+      }
+    },
+    {
+      "id": "G03_confirm_before_ticket",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tạo một ticket mức critical cho sự cố Wi-Fi văn phòng tầng 2.",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "confirm_write",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu tạo ticket mới chưa có xác nhận từ trước phải kích hoạt clarify với response_type=yes_no."
+      }
+    },
+    {
+      "id": "G04_out_of_scope_cooking",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hướng dẫn cho tôi cách pha một ly cà phê muối ngon chuẩn vị.",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu ngoài phạm vi hỗ trợ IT helpdesk phải từ chối mà không gọi tool."
+      }
+    },
+    {
+      "id": "G05_parallel_device_and_service",
+      "phase": "B",
+      "suite": "group",
+      "query": "Kiểm tra tình trạng mạng trên laptop LT-204 và kiểm tra cả dịch vụ Wi-Fi production.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "inspect_device",
+            "args": {
+              "asset_id": "LT-204",
+              "check": "network"
+            }
+          },
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "wifi",
+              "environment": "production"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "parallel_tools",
+        "difficulty": "hard",
+        "what_it_tests": "Gọi đồng thời hai tool kiểm tra thiết bị cá nhân và dịch vụ hạ tầng."
+      }
+    },
+    {
+      "id": "G06_multiturn_clarify_then_inspect",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Kiểm tra bảo mật trên máy tính của mình."
+        },
+        {
+          "role": "user",
+          "content": "Mã máy của mình là DT-087."
+        },
+        {
+          "role": "user",
+          "content": "Đúng rồi, hãy kiểm tra security của máy DT-087 đó."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "inspect_device",
+            "args": {
+              "asset_id": "DT-087",
+              "check": "security"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_fill_asset",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ mã asset ID được cung cấp ở lượt sau và thực hiện kiểm tra security."
+      }
+    },
+    {
+      "id": "G07_multiturn_employee_correction",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tra cứu thông tin nhân viên EMP-1005."
+        },
+        {
+          "role": "user",
+          "content": "Nhầm rồi, mã nhân viên đúng là EMP-1007."
+        },
+        {
+          "role": "user",
+          "content": "Xem thông tin tài khoản của nhân viên đó giúp tôi."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup_user",
+            "args": {
+              "employee_id": "EMP-1007"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_employee_correction",
+        "difficulty": "medium",
+        "what_it_tests": "Thông tin mã nhân viên được sửa ở lượt sau phải thay thế mã cũ."
+      }
+    },
+    {
+      "id": "G08_multiturn_ticket_change_payload",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tạo ticket sự cố VPN cho máy LT-318 mức low."
+        },
+        {
+          "role": "user",
+          "content": "Nâng mức ưu tiên lên high và ghi thêm không vào được mạng nội bộ."
+        },
+        {
+          "role": "user",
+          "content": "Hãy kiểm tra lại thông tin và hỏi xác nhận tôi trước."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "confirmation_payload_change",
+        "difficulty": "hard",
+        "what_it_tests": "Thay đổi thông số ticket thì xác nhận cũ mất hiệu lực, phải gọi clarify yes_no."
+      }
+    },
+    {
+      "id": "G09_multiturn_cancel_action",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tạo ticket cho máy in PR-404 bị kẹt giấy."
+        },
+        {
+          "role": "user",
+          "content": "Thôi hủy đi, máy in đã chạy lại bình thường rồi."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ cần xác nhận là bạn đã hủy yêu cầu đó."
+        }
+      ],
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "skill": "multiturn_cancel",
+        "difficulty": "hard",
+        "what_it_tests": "Người dùng hủy bỏ hành động thì không được gọi tool clarify hay create_ticket."
+      }
+    },
+    {
+      "id": "G10_multiturn_switch_status_to_kb",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Kiểm tra trạng thái dịch vụ email production."
+        },
+        {
+          "role": "user",
+          "content": "Không cần xem trạng thái nữa, tìm cho tôi bài viết hướng dẫn cấu hình email."
+        },
+        {
+          "role": "user",
+          "content": "Tìm bài hướng dẫn liên quan đến email trong kho kiến thức."
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "search_kb",
+            "args": {
+              "category": "email"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "Người dùng chuyển đổi ý định từ tra cứu dịch vụ sang tìm bài hướng dẫn trong KB."
+      }
+    }
+  ]
 }

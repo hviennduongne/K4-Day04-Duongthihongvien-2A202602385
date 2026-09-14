@@ -1,1 +1,8 @@
 version,author,changed_artifact,artifact_version,prompt_hash,tools_hash,reason,hypothesis,metric_name,metric_before,metric_after,run_file
+v0,Team,baseline,v0+p27467914bc4d+t86e19195220e,p27467914bc4d,t86e19195220e,initial baseline run,Baseline starter prompts without tuning,case_accuracy,0.0,0.6667,runs/v0_B_base_gemini_20260914T220905956236.json
+v1,Team,system_prompt.md+tools.yaml,v1+p2969e36ac47b+t483e4050d5fa,p2969e36ac47b,t483e4050d5fa,Toi uu routing clarification va confirmation boundaries,Bo sung quy tac clarify thieu ID va xac nhan ticket giup tang do chinh xac,case_accuracy,0.6667,0.9333,runs/v1_B_base_gemini_20260914T221725450726.json
+v2,Team,system_prompt.md,v2+p2969e36ac47b+t483e4050d5fa,p2969e36ac47b,t483e4050d5fa,Toi uu multi-turn triage va context retention,Cai thien multi-turn triage voi 3 nguon giup tang pass rate len 29/30,case_accuracy,0.9333,0.9667,runs/v2_B_base_gemini_20260914T222219931594.json
+v3,Team,system_prompt.md,v3+p184f5c3b9646+t483e4050d5fa,p184f5c3b9646,t483e4050d5fa,Toan dien routing confirm revalidation va security guardrails,Bat buoc clarify khi re-confirm va them guardrails bao ve giup dat 100% pass rate,case_accuracy,0.9667,1.0,runs/v3_B_base_gemini_20260914T222601894758.json
+
+
+
